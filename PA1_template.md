@@ -94,7 +94,7 @@ summary(activity)
 Let's see as an Histogram showing **frequency of total steps in each day** using Base Plotting System:
 
 ```r
-activity_total_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
+activity_total_steps <- aggregate(steps ~ date, activity, FUN = sum, na.rm = TRUE)
 names(activity_total_steps) <- c("date", "steps")
 hist(activity_total_steps$steps, main = "Total number of steps taken per day", xlab = "Total steps taken per day", col = "darkblue", ylim=c(0,25), breaks = seq(0,25000, by=1250))
 ```
@@ -110,7 +110,7 @@ print(paste("Steps Mean is ",steps_mean," and Median is ", steps_median))
 ```
 
 ```
-## [1] "Steps Mean is  9354.22950819672  and Median is  10395"
+## [1] "Steps Mean is  10766.1886792453  and Median is  10765"
 ```
 
 ## What is the average daily activity pattern?
@@ -191,10 +191,10 @@ print(paste("Mean with NA filled values is ", steps_mean_f," and with original v
 ```
 
 ```
-## [1] "Mean with NA filled values is  10766.1886792453  and with original values was  9354.22950819672 . The difference is  1411.95917104856 . Median with NA filled values is  10766.1886792453  and with original values was  10395 . The difference is  371.188679245282"
+## [1] "Mean with NA filled values is  10766.1886792453  and with original values was  10766.1886792453 . The difference is  0 . Median with NA filled values is  10766.1886792453  and with original values was  10765 . The difference is  1.1886792452824"
 ```
 
-Filling the NA data with choosen strategy has increased the mean and median values that are now equal.
+Filling the NA data with chosen strategy has maintained unchanged the mean value and slightly changed the median value. Mean and Median are now equals.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 We create a new factor variable in the dataset with two levels “weekday” and “weekend” based on weekday as created at the beginning of the assignment.
@@ -208,15 +208,14 @@ activity_NA_fill$datetype <- sapply(activity_NA_fill$weekday, function(x) {
                 y
         })
 ```
-Now we can make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+Now we can make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 
 ```r
 activity_by_date <- aggregate(steps~interval + datetype, activity_NA_fill, mean, na.rm = TRUE)
 plot<- ggplot(activity_by_date, aes(x = interval , y = steps, color = datetype)) +
        geom_line() +
-       labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps") +
-       facet_wrap(~datetype, ncol = 1, nrow=2)
+       labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps",colour= "Date type") + facet_wrap(~datetype, ncol = 1, nrow=2)
 print(plot)
 ```
 
