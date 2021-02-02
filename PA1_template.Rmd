@@ -68,7 +68,7 @@ summary(activity)
 ## What is mean total number of steps taken per day?
 Let's see as an Histogram showing **frequency of total steps in each day** using Base Plotting System:
 ```{r}
-activity_total_steps <- with(activity, aggregate(steps, by = list(date), FUN = sum, na.rm = TRUE))
+activity_total_steps <- aggregate(steps ~ date, activity, FUN = sum, na.rm = TRUE)
 names(activity_total_steps) <- c("date", "steps")
 hist(activity_total_steps$steps, main = "Total number of steps taken per day", xlab = "Total steps taken per day", col = "darkblue", ylim=c(0,25), breaks = seq(0,25000, by=1250))
 ```
@@ -133,7 +133,7 @@ These values are different from the values calculated in first part of the assig
 print(paste("Mean with NA filled values is ", steps_mean_f," and with original values was ", steps_mean,".", "The difference is ", (steps_mean_f-steps_mean), ".","Median with NA filled values is ", steps_median_f," and with original values was ", steps_median,".", "The difference is ", (steps_median_f-steps_median)))
 ```
 
-Filling the NA data with choosen strategy has increased the mean and median values that are now equal.
+Filling the NA data with chosen strategy has maintained unchanged the mean value and slightly changed the median value. Mean and Median are now equals.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 We create a new factor variable in the dataset with two levels “weekday” and “weekend” based on weekday as created at the beginning of the assignment.
@@ -146,14 +146,13 @@ activity_NA_fill$datetype <- sapply(activity_NA_fill$weekday, function(x) {
                 y
         })
 ```
-Now we can make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+Now we can make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 ```{r}
 activity_by_date <- aggregate(steps~interval + datetype, activity_NA_fill, mean, na.rm = TRUE)
 plot<- ggplot(activity_by_date, aes(x = interval , y = steps, color = datetype)) +
        geom_line() +
-       labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps") +
-       facet_wrap(~datetype, ncol = 1, nrow=2)
+       labs(title = "Average daily steps by type of date", x = "Interval", y = "Average number of steps",colour= "Date type") + facet_wrap(~datetype, ncol = 1, nrow=2)
 print(plot)
 ```
 
